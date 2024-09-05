@@ -1,6 +1,8 @@
 const express = require("express");
 // const User = require("../Models/userModel");
 const Task = require("../Models/taskModel");
+const { getOneUser } = require("./userController");
+const User = require("../Models/userModel");
 
 exports.createTask = async function (req, res) {
   try {
@@ -19,6 +21,23 @@ exports.createTask = async function (req, res) {
     });
   } catch (err) {
     res.status(400).json({
+      status: "fail",
+      message: err.message,
+    });
+  }
+};
+
+exports.getOneTask= async function (req, res) {
+  try {
+    const getOneTask = await Task.findById(req.params.id);
+    res.status(200).json({
+      status: "success",
+      data: {
+        users: getOneTask,
+      },
+    });
+  } catch (err) {
+    res.status.json({
       status: "fail",
       message: err.message,
     });
@@ -46,7 +65,6 @@ exports.updateTask = async function (req, res) {
     });
   }
 };
-
 
 exports.deleteTask = async function (req, res) {
   try {
