@@ -1,8 +1,5 @@
 const express = require("express");
-// const User = require("../Models/userModel");
 const Task = require("../Models/taskModel");
-const { getOneUser } = require("./userController");
-const User = require("../Models/userModel");
 
 exports.createTask = async function (req, res) {
   try {
@@ -33,7 +30,7 @@ exports.getOneTask= async function (req, res) {
     res.status(200).json({
       status: "success",
       data: {
-        users: getOneTask,
+        task: getOneTask,
       },
     });
   } catch (err) {
