@@ -1,17 +1,17 @@
 const express = require("express");
 const User = require("../Models/userModel");
-const bcrypt = require("bcrypt");
+const { createUserValidator } = require("../Validators/userValidator");
+
+const { hashPassword } = require("../helpers");
+const { createUserRepository } = require("../Repository/userRepository");
+
 
 exports.createUser = async function (req, res) {
   try {
-    const saltRound = 10;
-    const hashedPassword = bcrypt.hashSync(req.body.password, saltRound);
-
-    const newUser = await User.create({
-      fullName: req.body.fullName,
-      email: req.body.email,
-      password: hashedPassword,
-    });
+    const {fullName, email, password} = createUserValidator.parse(req.body)
+    const hashedPassword = hashPassword(password);
+    const newUser = await createUserRepository({fullName, email, password:hashedPassword});
+      
     res.status(201).json({
       status: "success",
       message: "User created!",

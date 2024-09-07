@@ -1,6 +1,7 @@
 const User = require("../Models/userModel");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { hashPassword } = require("../helpers");
 
 exports.signUp = async function (req, res) {
   try {
@@ -13,13 +14,10 @@ exports.signUp = async function (req, res) {
       });
     }
 
-    const saltRound = 10;
-    const hashedPassword = await bcrypt.hashSync(req.body.password, saltRound);
-    const newUser = await User.create({
-      fullName: req.body.fullName,
-      email: req.body.email,
-      password: hashedPassword,
-    });
+    const {fullName, email, password} = createUserValidator.parse(req.body)
+    const hashedPassword = hashPassword(password);
+    const newUser = await createUserRepository({fullName, email, password:hashedPassword});
+    
     res.status(201).json({
       status: "success",
       data: {
